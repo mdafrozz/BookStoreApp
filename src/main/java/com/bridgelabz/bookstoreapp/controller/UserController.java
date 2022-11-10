@@ -68,8 +68,7 @@ public class UserController {
     @GetMapping("/getby/{token}")
     public ResponseEntity<ResponseDTO>getUserDetails(@PathVariable String token){
         UserModel userModel = iuserService.getUserDataByToken(token);
-        int Userid = tokenUtil.decodeToken(token);
-        ResponseDTO respDTO = new ResponseDTO("Data retrieved successfully for the ID: "+Userid, userModel);
+        ResponseDTO respDTO = new ResponseDTO("Data retrieved successfully", userModel);
         return new ResponseEntity<>(respDTO, HttpStatus.OK);
     }
     
@@ -119,5 +118,13 @@ public class UserController {
         int response = iuserService.deleteUser(id);
         ResponseDTO respDTO= new ResponseDTO("Deleted Successfully Id:",response );
         return new ResponseEntity<>(respDTO, HttpStatus.OK);
+    }
+    
+    //Generate user token from id
+    @PostMapping(value = {"/gen/{id}"})
+    public ResponseEntity<ResponseDTO> GenerateToken(@PathVariable int id) {
+        String token = iuserService.generateToken(id);
+        ResponseDTO responseDTO = new ResponseDTO("Token Generated Successfully!!!",token);
+        return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.CREATED);
     }
 }

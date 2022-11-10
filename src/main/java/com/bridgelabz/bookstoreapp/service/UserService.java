@@ -45,7 +45,7 @@ public class UserService implements IUserService {
         		"\n\uD83D\uDD11 Password: "+userModel.getPassword()+"\n\uD83E\uDE99 Token :"+token
         		+"\n\nRegards \uD83D\uDE4F,\nBookStore Team";
         //sending email
-        emailSender.sendEmail(userModel.getEmailAddress(), "Registered Successfully", data);
+        //emailSender.sendEmail(userModel.getEmailAddress(), "Registered Successfully", data);
         return token;}
     }
     
@@ -59,7 +59,6 @@ public class UserService implements IUserService {
     }
     
     //Get the user data by id
-    @Override
     public UserModel getUserDataById(int id) {
     	UserModel userModel = userRepo.findById(id).orElse(null);
         if (userModel != null) {
@@ -69,18 +68,17 @@ public class UserService implements IUserService {
     }
     
     //Get User Details by Token
-    @Override
     public UserModel getUserDataByToken(String token) {
-        int Userid = tokenUtil.decodeToken(token);
-        Optional<UserModel> userModel = userRepo.findById(Userid);
-        if(userModel.isPresent()){
-            return userModel.get();
-        }else
-            throw new UserException("Invalid Token");
+    	try{
+    		int id = tokenUtil.decodeToken(token);
+    		return userRepo.findById(id).stream()
+                .filter(data -> data.getUserId() == id)
+                .findFirst()
+                .orElseThrow(() -> new UserException("Invalid User/Token"));}
+    	catch(Exception e){throw new UserException("Invalid User/Token");}
     }
     
     //Get the User Details by Email Address
-    @Override
     public UserModel getUserDataByEmail(String email) {
     	UserModel userModel = userRepo.findByEmailAddress(email);
         if (userModel != null) {
@@ -90,7 +88,6 @@ public class UserService implements IUserService {
     }
     
     //Send email link for the forgot password
-    @Override
     public String forgotPassword(String email, String newPassword) {
         UserModel userModel = userRepo.findByEmailAddress(email);
         if(userModel!=null){
@@ -102,7 +99,6 @@ public class UserService implements IUserService {
     }
     
     //reset password
-    @Override
     public String changePassword(LoginDTO loginDTO, String newPassword) {
         UserModel userModel = userRepo.findByEmailAddress(loginDTO.getEmailAddress());
         //String password = loginDTO.getPassword();
@@ -121,7 +117,6 @@ public class UserService implements IUserService {
     }
     
     //Update data by email address
-    @Override
     public UserModel updateUserDataByEmail(UserDTO userDTO, String email) {
     	UserModel userModel = userRepo.findByEmailAddress(email);
         if (userModel != null) {
@@ -138,14 +133,13 @@ public class UserService implements IUserService {
             		"\uD83D\uDCE7 Email Address: "+userModel.getEmailAddress()+"\n\uD83D\uDCC6 DOB: "+userModel.getDOB()+
             		"\n\uD83D\uDD11 Password: "+userModel.getPassword()+"\n\nRegards \uD83D\uDE4F,\nBookStore Team";
             //sending email
-            emailSender.sendEmail(userModel.getEmailAddress(), "Data Updated!!!",data );
+            //emailSender.sendEmail(userModel.getEmailAddress(), "Data Updated!!!",data );
             return userRepo.save(userModel);
         } else
             throw new UserException("Invalid Email Address: " + email);
     }
     
     //Login check
-    @Override
     public String loginUser(LoginDTO loginDTO) {
         UserModel userModel = userRepo.findByEmailAddress(loginDTO.getEmailAddress());
         if(userModel!=null){
@@ -167,10 +161,18 @@ public class UserService implements IUserService {
            			+ "Thank you,\n"
            			+ "BookStore Team";
         	//sending email
-            emailSender.sendEmail(userModel.getEmailAddress(), "User Removed!!!", msg);
+            //emailSender.sendEmail(userModel.getEmailAddress(), "User Removed!!!", msg);
             userRepo.deleteById(id);
         }else
             throw new UserException("Error: Cannot find User ID " + id);
         return id;
+    }
+    
+    public String generateToken(int id) {
+        UserModel model = userRepo.findById(id).get();
+        if(model != null) {
+        String token = tokenUtil.createToken(model.getUserId());
+        return token;}
+        else throw new UserException("Invalid ID");
     }
 }

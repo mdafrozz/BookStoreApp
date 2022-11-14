@@ -25,7 +25,7 @@ public class UserDTO {
 	@NotEmpty(message = "Address Cannot be Empty")
 	private String address;
 
-	@NotNull(message = "Email Address cannot be Null")
+	@Pattern(regexp = "^[a-z0-9]{1,20}([_.+-][a-z0-9]+)?@[a-z0-9]+.[a-z]{2,3}(.[a-z]{2})?$", message = "Enter a valid Email-id")
 	private String emailAddress;
 	
 	@JsonFormat(pattern = "dd MM yyyy")
@@ -34,8 +34,8 @@ public class UserDTO {
 	private LocalDate DOB;
     
 	@NotEmpty(message = "Password Cannot be Empty")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&*()-+=])([a-zA-Z0-9@._-]).{8,}$", message="Invalid Password\n(1.Must have atleast one upper case character.\n" +
-            "2.Must contain atleast one numeric value.\n3.Must contain a special symbol.\n4. Must have a lower case character. \n5.Should have minimum 8 characters.)")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&*()-+=])([a-zA-Z0-9@._-]).{8,}$", message="Invalid Password (1.Must have atleast one upper case character" +
+            " 2.Must contain atleast one numeric value 3.Must contain a special symbol 4. Must have a lower case character 5.Should have minimum 8 characters)")
 	private String password;
 
 }

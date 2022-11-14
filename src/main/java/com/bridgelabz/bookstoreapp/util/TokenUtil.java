@@ -14,51 +14,46 @@ import com.auth0.jwt.interfaces.Verification;
 public class TokenUtil {
 	private static final String TOKEN_SECRET = "zorfa";
 
+	public String createToken(int id) {
+		try {
+			// to set algorithm
+			Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
 
-	public String createToken(int id)   {
-	       try {
-	        //to set algorithm
-	        Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-	 
-	        String token = JWT.create()
-	        .withClaim("user_id", id)
-	        .sign(algorithm);
-	        return token;
-	        
-	        } catch (JWTCreationException exception) {
-	        exception.printStackTrace();
-	           //log Token Signing Failed
-	        } catch (IllegalArgumentException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
+			String token = JWT.create().withClaim("user_id", id).sign(algorithm);
+			return token;
+
+		} catch (JWTCreationException exception) {
+			exception.printStackTrace();
+			// log Token Signing Failed
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
-	       return null;
-	 }
-
 
 	/**
-	* @param token
-	* @return
-	*/
-	public int decodeToken(String token)
-	 {
-	 int userid;
-	           //for verification algorithm
-	           Verification verification = null;
-	try {
-	verification = JWT.require(Algorithm.HMAC256(TOKEN_SECRET));
-	} catch (IllegalArgumentException  e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-	}
-	           JWTVerifier jwtverifier=verification.build();
-	           //to decode token
-	           DecodedJWT decodedjwt=jwtverifier.verify(token);
+	 * @param token
+	 * @return
+	 */
+	public int decodeToken(String token) {
+		int userid;
+		// for verification algorithm
+		Verification verification = null;
+		try {
+			verification = JWT.require(Algorithm.HMAC256(TOKEN_SECRET));
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JWTVerifier jwtverifier = verification.build();
+		// to decode token
+		DecodedJWT decodedjwt = jwtverifier.verify(token);
 
-	           Claim claim=decodedjwt.getClaim("user_id");
-	           userid=claim.asInt();    
-	           return userid;
-	     
-	 }
+		Claim claim = decodedjwt.getClaim("user_id");
+		userid = claim.asInt();
+		return userid;
+
+	}
 }
 

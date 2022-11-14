@@ -10,7 +10,8 @@ import com.bridgelabz.bookstoreapp.model.BookModel;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookModel, Integer> {
-    @Query(value = "SELECT * FROM book WHERE name LIKE %:bookName%", nativeQuery = true)
+    //Using custom query
+	@Query(value = "SELECT * FROM book WHERE name LIKE %:bookName%", nativeQuery = true)
     List<BookModel> findByBookName(String bookName);
     
 }

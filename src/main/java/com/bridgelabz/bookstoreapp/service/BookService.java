@@ -43,7 +43,7 @@ public class BookService implements IBookService {
         if (bookModel != null) {
             return bookModel;
         } else
-            throw new BookException("Invalid ID");
+            throw new BookException("Invalid BookID");
     }
 
     //delete by id
@@ -52,7 +52,7 @@ public class BookService implements IBookService {
         if (bookModel != null) {
             bookRepo.deleteById(id);
         } else
-            throw new BookException("Invalid Id");
+            throw new BookException("Invalid BookId");
         return bookModel.getBookName();
     }
 
@@ -77,7 +77,7 @@ public class BookService implements IBookService {
             bookModel.setQuantity(bookDTO.getQuantity());
             return bookRepo.save(bookModel);
         } else
-            throw new BookException("Invalid ID: " + id);
+            throw new BookException("Invalid BookID: " + id);
     }
 
     //Sorting : Ascending
@@ -107,6 +107,7 @@ public class BookService implements IBookService {
             bookRepo.save(bookModel);
             return bookModel;
         } else
-            throw new BookException("Invalid ID");
+            throw new BookException("Invalid BookID");
     }
+    
 }

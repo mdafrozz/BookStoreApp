@@ -2,6 +2,8 @@ package com.bridgelabz.bookstoreapp.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.bookstoreapp.dto.BookDTO;
 import com.bridgelabz.bookstoreapp.dto.ResponseDTO;
-import com.bridgelabz.bookstoreapp.exception.BookException;
 import com.bridgelabz.bookstoreapp.model.BookModel;
-import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.service.IBookService;
-import com.bridgelabz.bookstoreapp.util.TokenUtil;
+import com.bridgelabz.bookstoreapp.service.IUserService;
 
 @RestController
 @RequestMapping("/book")
@@ -32,28 +32,23 @@ public class BookController {
     IBookService bookService;
 	
 	@Autowired
-	UserRepository userRepo;
-    
-	@Autowired
-    TokenUtil tokenUtil;
+	IUserService iuserService;
    
 	//Welcome Message
     @RequestMapping(value = {"", "/", "/home"}, method = RequestMethod.GET)
     public String homePage() {
         return "Hello! Welcome to Book Store App..!!";
     }
+    
     //Inserting Data
     @PostMapping("/insert/{utoken}")
-    public ResponseEntity<ResponseDTO> addBookDetails(@PathVariable String utoken,@RequestBody BookDTO bookDTO){
-    	try{
-   		int id = tokenUtil.decodeToken(utoken);
-   		do {
+    public ResponseEntity<ResponseDTO> addBookDetails(@PathVariable String utoken,@Valid @RequestBody BookDTO bookDTO){
+    	boolean flag = iuserService.validateUser(utoken);
+   		do{
    		String response = bookService.addBook(bookDTO);
         ResponseDTO responseDTO = new ResponseDTO("Book Details Added", response);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-        }while(userRepo.findById(id).isPresent());}
-    	catch(Exception e){throw new BookException("Invalid User/ Token");}
-
+   		}while(flag);
     }
     
     //Get all Book Details
@@ -65,24 +60,22 @@ public class BookController {
     }
     
     //Get the book details by Book ID
-    @GetMapping("/getbyid/{id}")
-    public ResponseEntity<ResponseDTO> getBookDataById(@PathVariable int id) {
-    	BookModel bookModel = bookService.getBookById(id);
-        ResponseDTO responseDTO = new ResponseDTO("Book details with ID: "+id,bookModel);
+    @GetMapping("/getby/{book_id}")
+    public ResponseEntity<ResponseDTO> getBookDataById(@PathVariable int book_id) {
+    	BookModel bookModel = bookService.getBookById(book_id);
+        ResponseDTO responseDTO = new ResponseDTO("Book details with ID: "+book_id,bookModel);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
     
     //Delete book details by ID
     @DeleteMapping("/delete/{book_id}/{utoken}")
     public ResponseEntity <ResponseDTO> deleteBookDataByID(@PathVariable int book_id,@PathVariable String utoken) {
-    	try{
-       		int id = tokenUtil.decodeToken(utoken);
-       	do {
+    	boolean flag = iuserService.validateUser(utoken);
+   		do{
        	String bName = bookService.deleteBook(book_id);
-        ResponseDTO responseDTO = new ResponseDTO(bName,"Deleted Successfully: ");
+        ResponseDTO responseDTO = new ResponseDTO(bName,"Deleted Successfully");
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-       	}while(userRepo.findById(id).isPresent());}
-    	catch(Exception e){throw new BookException("Invalid User/ Token");}
+   		}while(flag);
     }
     
     //Search by Book
@@ -95,16 +88,14 @@ public class BookController {
     
     //Update by Book ID
     @PutMapping("/updatebook/{book_id}/{utoken}")
-    public ResponseEntity<ResponseDTO> updateBookbyId(@PathVariable int book_id,@PathVariable String utoken,
+    public ResponseEntity<ResponseDTO> updateBookbyId(@PathVariable int book_id,@PathVariable String utoken,@Valid
     		@RequestBody BookDTO bookDTO) {
-    	try{
-       		int id = tokenUtil.decodeToken(utoken);
-       	do {
+    	boolean flag = iuserService.validateUser(utoken);
+   		do{
    		BookModel bookModel = bookService.updateBookbyId(bookDTO, book_id);
         ResponseDTO responseDTO= new ResponseDTO(bookModel.getBookName(),"Updated Successfully");
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-       	}while(userRepo.findById(id).isPresent());}
-    	catch(Exception e){throw new BookException("Invalid User/ Token");}
+		}while(flag);
     }
     
     //Sorting in Ascending order by price
@@ -124,9 +115,9 @@ public class BookController {
     }
 	
 	  //update quantity by Book ID
-	  @PutMapping("/updateQty/{id}") 
-	  public ResponseEntity<ResponseDTO> updateQuantityById(@PathVariable int id,@RequestParam int qty) { 
-	  BookModel response = bookService.updateQuantity(id,qty); 
+	  @PutMapping("/updateqty/{bookid}") 
+	  public ResponseEntity<ResponseDTO> updateQuantityById(@PathVariable int bookid,@RequestParam int qty) { 
+	  BookModel response = bookService.updateQuantity(bookid,qty); 
 	  ResponseDTO responseDTO= new ResponseDTO("Book Quantity updated..", response); 
 	  return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK); 
 	}

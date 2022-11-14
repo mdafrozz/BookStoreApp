@@ -20,14 +20,14 @@ public class BookModel {
 	@Id
 	@GeneratedValue
 	@Column(name = "BookId", nullable = false)
-	int BookId;
+	private int BookId;
 	@Column(name = "name", nullable = false)
-	String bookName;
-	String authorName;
-	String bookDescription;
-	String bookImage;
-	int price;
-	int quantity;
+	private String bookName;
+	private String authorName;
+	private String bookDescription;
+	private String bookImage;
+	private int price;
+	private int quantity;
 	 
 	public BookModel(BookDTO bookdto){
 		this.bookName = bookdto.getBookName();

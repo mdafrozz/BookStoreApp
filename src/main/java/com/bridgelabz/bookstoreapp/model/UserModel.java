@@ -21,14 +21,14 @@ public class UserModel {
 	
 	@Id
 	@GeneratedValue
-	int userId;
-	String firstName;
-	String lastName;
-	String address;
+	private int userId;
+	private String firstName;
+	private String lastName;
+	private String address;
 	@Column(name = "email")
-	String emailAddress;
-	LocalDate DOB;
-	String password;
+	private String emailAddress;
+	private LocalDate DOB;
+	private String password;
 	
 	public UserModel(UserDTO userdto) {
 			

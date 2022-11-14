@@ -15,12 +15,12 @@ public class BookDTO {
 	private String bookName;
 	@Pattern(regexp = "^[A-Z]{1}[a-zA-Z\\s]{1,}$", message="Invalid Author Name(First Letter Should be in Upper Case)")
 	private String authorName;
-	@NotNull
+	@NotNull(message = "Book Description cannot be Empty")
 	private String bookDescription;
-	@NotEmpty
+	@NotEmpty(message = "Please choose a BookImage")
 	private String bookImage;
-	@NotNull
+	@NotNull(message = "Book Price cannot be null")
 	private int price;
-	@NotNull
+	@NotNull(message = "Please specify valid book quantity")
 	private int quantity;
 }

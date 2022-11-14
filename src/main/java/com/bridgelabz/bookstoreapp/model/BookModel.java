@@ -19,9 +19,9 @@ public class BookModel {
 	
 	@Id
 	@GeneratedValue
-	@Column(name = "BookId", nullable = false)
+	@Column(name = "BookId")
 	private int BookId;
-	@Column(name = "name", nullable = false)
+	@Column(name = "name")
 	private String bookName;
 	private String authorName;
 	private String bookDescription;

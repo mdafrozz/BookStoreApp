@@ -2,6 +2,8 @@ package com.bridgelabz.bookstoreapp.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,55 +24,56 @@ import com.bridgelabz.bookstoreapp.service.IOrderService;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-	
-    @Autowired
-    IOrderService iorderService;
 
-    //Add Order Details and send email 
-    @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> addOrderDetails(@RequestBody OrderDTO orderDTO){
-        OrderModel orderModel = iorderService.addOrderDetails(orderDTO);
-        ResponseDTO responseDTO = new ResponseDTO("Order Details Added", orderModel);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-    
-    //GetAll Orders
-    @GetMapping("/getall")
-    public ResponseEntity<ResponseDTO> getAllOrders() {
-        List<OrderModel> orderModel = iorderService.getAllOrders();
-        ResponseDTO responseDTO = new ResponseDTO("All Records retrieved Successfully !", orderModel);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-    
-    //Get Order details by order ID
-    @GetMapping("/getby/{orderId}")
-    public ResponseEntity<ResponseDTO> getOrderDataByOrderID(@PathVariable int orderId){
-        OrderModel orderModel = iorderService.getOrderDetailsByOrderId(orderId);
-        ResponseDTO responseDTO = new ResponseDTO("Order Details with Order ID: "+orderId, orderModel);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-    
-    //Update Order Details By OrderID
-    @PutMapping("/update/{orderId}")
-    public ResponseEntity<ResponseDTO> updateOrderById(@PathVariable int orderId, @RequestBody OrderDTO orderDTO){
-        String response = iorderService.editOrderByOrderId(orderId, orderDTO);
-        ResponseDTO responseDTO = new ResponseDTO("Updated Order Details with Order ID: "+orderId, response);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-    
-    //Delete Order By OrderID
-    @DeleteMapping("/delete/{userId}/{orderId}")
-    public ResponseEntity<ResponseDTO> updateDeleteById(@PathVariable int userId,@PathVariable int orderId){
-        String response = iorderService.deleteOrderByOrderId(userId, orderId);
-        ResponseDTO responseDTO = new ResponseDTO("Status of order Id: "+orderId, response);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-    
-    //Cancel Order
-    @PutMapping("/cancelorder/{userId}/{orderId}")
-    public ResponseEntity<ResponseDTO> cancelOrderById(@PathVariable int orderId, @PathVariable int userId) {
-        String response = iorderService.cancelOrderById(orderId, userId);
-        ResponseDTO responseDTO = new ResponseDTO("Order Cancelled Successfully !!", response);
-        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-    }
+	@Autowired
+	IOrderService iorderService;
+
+	// Add Order Details and send email
+	@PostMapping("/add")
+	public ResponseEntity<ResponseDTO> addOrderDetails(@Valid @RequestBody OrderDTO orderDTO) {
+		OrderModel orderModel = iorderService.addOrderDetails(orderDTO);
+		ResponseDTO responseDTO = new ResponseDTO("Order Details Added", orderModel);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	// GetAll Orders
+	@GetMapping("/getall")
+	public ResponseEntity<ResponseDTO> getAllOrders() {
+		List<OrderModel> orderModel = iorderService.getAllOrders();
+		ResponseDTO responseDTO = new ResponseDTO("All Records retrieved Successfully !", orderModel);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	// Get Order details by order ID
+	@GetMapping("/getby/{orderId}")
+	public ResponseEntity<ResponseDTO> getOrderDataByOrderID(@PathVariable int orderId) {
+		OrderModel orderModel = iorderService.getOrderDetailsByOrderId(orderId);
+		ResponseDTO responseDTO = new ResponseDTO("Order Details with Order ID: " + orderId, orderModel);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	// Update Order Details By OrderID
+	@PutMapping("/update/{orderId}")
+	public ResponseEntity<ResponseDTO> updateOrderById(@PathVariable int orderId,
+			@Valid @RequestBody OrderDTO orderDTO) {
+		String response = iorderService.editOrderByOrderId(orderId, orderDTO);
+		ResponseDTO responseDTO = new ResponseDTO("Updated Order Details with Order ID: " + orderId, response);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	// Delete Order By OrderID
+	@DeleteMapping("/delete/{userId}/{orderId}")
+	public ResponseEntity<ResponseDTO> updateDeleteById(@PathVariable int userId, @PathVariable int orderId) {
+		String response = iorderService.deleteOrderByOrderId(userId, orderId);
+		ResponseDTO responseDTO = new ResponseDTO("Status of order Id: " + orderId, response);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	// Cancel Order
+	@PutMapping("/cancelorder/{userId}/{orderId}")
+	public ResponseEntity<ResponseDTO> cancelOrderById(@PathVariable int orderId, @PathVariable int userId) {
+		String response = iorderService.cancelOrderById(orderId, userId);
+		ResponseDTO responseDTO = new ResponseDTO("Order Cancelled Successfully !!", response);
+		return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+	}
 }

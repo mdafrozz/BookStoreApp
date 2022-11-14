@@ -19,4 +19,5 @@ public interface IUserService {
     public UserModel updateUserDataByEmail(UserDTO userDTO, String email);
     public int deleteUser(int id);
     public String generateToken(int id);
+    public boolean validateUser(String token);
 }

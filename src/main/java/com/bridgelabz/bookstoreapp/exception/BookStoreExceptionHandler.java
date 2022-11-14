@@ -14,6 +14,7 @@ import com.bridgelabz.bookstoreapp.dto.ResponseDTO;
 
 @ControllerAdvice
 public class BookStoreExceptionHandler {
+	
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception){
         List<ObjectError> errorList = exception.getBindingResult().getAllErrors();
@@ -23,13 +24,27 @@ public class BookStoreExceptionHandler {
         ResponseDTO responseDTO = new ResponseDTO("Exception while processing REST request", error_message.toString());
         return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
     }
+    
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ResponseDTO> handleUserException(UserException exception){
         ResponseDTO resDTO = new ResponseDTO("Exception while processing REST request", exception.getMessage());
         return new ResponseEntity<>(resDTO, HttpStatus.BAD_REQUEST);
     }
+    
     @ExceptionHandler(BookException.class)
     public ResponseEntity<ResponseDTO> handleBookException(BookException exception){
+        ResponseDTO resDTO = new ResponseDTO("Exception while processing REST request", exception.getMessage());
+        return new ResponseEntity<>(resDTO, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(CartException.class)
+    public ResponseEntity<ResponseDTO> handleCartException(CartException exception){
+        ResponseDTO resDTO = new ResponseDTO("Exception while processing REST request", exception.getMessage());
+        return new ResponseEntity<>(resDTO, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<ResponseDTO> handleOrderException(OrderException exception){
         ResponseDTO resDTO = new ResponseDTO("Exception while processing REST request", exception.getMessage());
         return new ResponseEntity<>(resDTO, HttpStatus.BAD_REQUEST);
     }

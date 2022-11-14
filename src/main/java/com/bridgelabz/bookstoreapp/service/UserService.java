@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.bookstoreapp.dto.LoginDTO;
 import com.bridgelabz.bookstoreapp.dto.UserDTO;
+import com.bridgelabz.bookstoreapp.exception.BookException;
 import com.bridgelabz.bookstoreapp.exception.UserException;
 import com.bridgelabz.bookstoreapp.model.UserModel;
 import com.bridgelabz.bookstoreapp.repository.UserRepository;
@@ -45,7 +46,7 @@ public class UserService implements IUserService {
         		"\n\uD83D\uDD11 Password: "+userModel.getPassword()+"\n\uD83E\uDE99 Token :"+token
         		+"\n\nRegards \uD83D\uDE4F,\nBookStore Team";
         //sending email
-        //emailSender.sendEmail(userModel.getEmailAddress(), "Registered Successfully", data);
+        emailSender.sendEmail(userModel.getEmailAddress(), "Registered Successfully", data);
         return token;}
     }
     
@@ -101,7 +102,6 @@ public class UserService implements IUserService {
     //reset password
     public String changePassword(LoginDTO loginDTO, String newPassword) {
         UserModel userModel = userRepo.findByEmailAddress(loginDTO.getEmailAddress());
-        //String password = loginDTO.getPassword();
         if(userModel!=null){
         	if(userModel.getPassword().equals(loginDTO.getPassword())) {
         		userModel.setPassword(newPassword); //changing password
@@ -174,5 +174,15 @@ public class UserService implements IUserService {
         String token = tokenUtil.createToken(model.getUserId());
         return token;}
         else throw new UserException("Invalid ID");
+    }
+    
+    public boolean validateUser(String token) {
+    	try{
+       		int id = tokenUtil.decodeToken(token);
+       		do {
+       			return true;
+       		}while(userRepo.findById(id).isPresent());}
+    	catch(Exception e){throw new BookException("Invalid User/ Token");}
+       		
     }
 }

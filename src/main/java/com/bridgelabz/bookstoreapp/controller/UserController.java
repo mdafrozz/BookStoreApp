@@ -68,7 +68,7 @@ public class UserController {
     @GetMapping("/getby/{token}")
     public ResponseEntity<ResponseDTO>getUserDetails(@PathVariable String token){
         UserModel userModel = iuserService.getUserDataByToken(token);
-        ResponseDTO respDTO = new ResponseDTO("Data retrieved successfully", userModel);
+        ResponseDTO respDTO = new ResponseDTO("Data with Token retrieved successfully", userModel);
         return new ResponseEntity<>(respDTO, HttpStatus.OK);
     }
     
@@ -121,7 +121,7 @@ public class UserController {
     }
     
     //Generate user token from id
-    @PostMapping(value = {"/gen/{id}"})
+    @PostMapping("/gen/{id}")
     public ResponseEntity<ResponseDTO> GenerateToken(@PathVariable int id) {
         String token = iuserService.generateToken(id);
         ResponseDTO responseDTO = new ResponseDTO("Token Generated Successfully!!!",token);
